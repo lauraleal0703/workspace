@@ -30,36 +30,28 @@ def curl_qradar(script: str, headers=None, params=None):
         return []
 
 
-def login_attempts(headers=None, params=None):
-    """access"""
-    return curl_qradar("access/login_attempts", headers=headers, params=params)
-
-
-def ariel_searches(headers=None, params=None):
-    """ariel"""
-    return curl_qradar("ariel/searches", headers=headers, params=params)
-
-
-def rules(headers=None, params=None):
-    """analytics"""
-    return curl_qradar("analytics/rules", headers=headers, params=params)
-
-
-def domain_management_domains(headers=None, params=None):
-    """config"""
-    return curl_qradar("config/domain_management/domains", headers=headers, params=params)
-
-
 def offenses(headers=None, params=None):
     """siem"""
     return curl_qradar("siem/offenses", headers=headers, params=params)
 
 
-def offense_types(headers=None, params=None):
-    """siem"""
-    return curl_qradar("siem/offense_types", headers=headers, params=params)
-
-
+def start_time_offenses(id_offense):
+    def_name = "start_time_offenses"
+    try:
+        data_qradar = offenses(
+                        params={
+                            "fields": "start_time",
+                            "filter": f"id={int(id_offense)}"
+                            }
+                        )
+        if data_qradar:
+            return int(data_qradar[0]["start_time"])/1000
+        else:
+            return ""
+    except Exception as e:
+        logging.error(f"{def_name}: {e}")
+        return ""
+    
 ##################################
 #------------Soporte--------------
 ###################################
