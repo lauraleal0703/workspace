@@ -22,28 +22,18 @@ last_persisted_time', 'username_count', 'description', 'rules',
 ######################
 #--------Data-------
 #######################
-
-# data = tools_qradar.offenses(
-#         headers={"Range": "items=0-30"}, 
-#         params={
-#                 "fields": "id",
-#                 "filter": "id=62857"
-#                 }
-#         )
-
-# data = tools_qradar.offenses(
-#         params={
-#                 "filter": "id=62857"
-#                 }
-#         )
+print("hola")
+print("hola")
 
 
-# epoch = data[0]["start_time"]
-# fecha_chl = tools_qradar.epoch2date(epoch)
-# print(fecha_chl)
+data = tools_qradar.offenses(
+        headers={"Range": "items=0-3"}, 
+        params={
+                "fields": "id"
+                }
+        )
 
-# pprint(data)
-
+pprint(data)
 
 # data = tools_qradar.offenses(
 #         headers={"Range": "items=0-5"}, 
@@ -64,10 +54,6 @@ last_persisted_time', 'username_count', 'description', 'rules',
 #         else:
 #             dict_offenses[params].append(dato[params])
 
-
-# data = tools_qradar.curl_general("https://172.16.17.10/api/ariel/searches?query_expression=select*from%22events")
-# pprint(data)
-
 # dict_offenses["dateChl"] = []
 # for epoch in dict_offenses["start_time"]:
 #     fecha_chl = tools_qradar.epoch2date(epoch)
@@ -75,6 +61,3 @@ last_persisted_time', 'username_count', 'description', 'rules',
 # dict_offenses.pop('start_time')
 
 # pprint(dict_offenses)
-
-data = tools_qradar.curl_general()
-print(data)
