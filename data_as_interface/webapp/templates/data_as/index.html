@@ -1,0 +1,114 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<figure class="highcharts-figure">
+    <div id="container_1"></div>
+</figure>
+
+<figure class="highcharts-figure">
+    <div id="container_2"></div>
+</figure>
+
+<script>
+Highcharts.chart('container_1', {
+    title: {
+        text: 'Número total de incidentes de seguridad {{ total }}',
+        align: 'center'
+    },
+    yAxis: {
+        title: {
+            text: 'Número de incidentes'
+        }
+    },
+    xAxis: {
+        accessibility: {
+            rangeDescription: 'Range: 1 to {{ y_counts|length }}'
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle'
+    },
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            },
+            pointStart: 1
+        }
+    },
+    series: [{
+        name: 'Total',
+        data: {{ y_counts }} 
+    }, {
+        name: 'Manuales',
+        data: {{ y_counts_handwork }}
+    }, {
+        name: 'Automáticas',
+        data: {{ y_counts_automatic }}
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 500
+            },
+            chartOptions: {
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                }
+            }
+        }]
+    }
+});
+
+Highcharts.chart('container_2', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Estadísticas'
+    },
+    xAxis: {
+        categories: {{ cases_statistics | safe }},
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Número de incidentes'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+        pointPadding: 0.2,
+        borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Total',
+        data: {{ cases_statistics_total }}
+
+    }, {
+        name: 'Manuales',
+        data: {{ cases_statistics_manual }}
+
+    }, {
+        name: 'Automaticas',
+        data: {{ cases_statistics_automatica }}
+    }]
+});
+</script>
