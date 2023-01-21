@@ -2,9 +2,10 @@ from flask import Blueprint
 from flask import render_template
 from flask import request
 from flask import current_app
+from flask import redirect
+from flask import url_for
 
 import os
-import re
 import json
 import statistics
 import numpy  as np
@@ -15,72 +16,127 @@ data_as = Blueprint("data_as", __name__, url_prefix="/data_as")
 
 @data_as.get("/")
 def index():
-    current_folder = os.path.join(current_app.root_path, "static", "data_storage", "data_as")
+    current_folder = os.path.join(current_app.root_path, "static", "data_storage", "data_as", "data_collected")
     if request.method == "GET":
-        year = request.args.get("year")
-        month = request.args.get("month")
+        year = request.args.get("year", type=int)
+        
+        if not year:
+            year = 2022
+        elif year < 2018 or year > 2023:
+            year = 2022
+
+        month = request.args.get("month", type=int)
+
+        if month and (month < 1 or month > 12):
+            return redirect(url_for("data_as.index", year=year, month=1))
 
         if year and not month:
-            file_path = os.path.join(current_folder, year, f"ticket_offenses_{year}.json")
-            data_year = open(file_path)
-            data_year = json.load(data_year)
+            file_path = os.path.join(current_folder, str(year), f"total_offenses_year_{year}.json")
+            data = open(file_path)
+            data = json.load(data)
 
-            x_month = data_year[year].keys()
-            y_counts = len(x_date)*[0]
-            for month in data_year:
-                y_counts = y_counts + np.array(data_year[month])
+        elif year and month:
+            file_path = os.path.join(current_folder, str(year), f"total_offenses_month_{month}.json")
+            data = open(file_path)
+            data = json.load(data)
 
-            
+        cases_statistics = ["Promedio", "Máximo", "Mínimo"]
+        variables = ["handwork_total",
+            "handwork_success",
+            "handwork_fails",
+            "handwork_undefined",
+            "handwork_low",
+            "handwork_mean",
+            "handwork_high",
+            "automatic_total",
+            "automatic_success",
+            "automatic_fails",
+            "automatic_undefined",
+            "automatic_low",
+            "automatic_mean",
+            "automatic_high",
+            "undefined",
+            "total"
+        ]
 
-
-
-            x_date = data_month["offenses_handwork_low_successes"]["dates"]
-            y_counts = len(x_date)*[0]
-
-            cases_statistics = ['Promedio', 'Máximo', 'Mínimo']
-
-            ##################--KPI N° 1--####################
-            ## Número total de incidentes de seguridad ##
-
-            # Grafica con el total de tickets
-            for type_case in data_month:
-                y_counts = y_counts + np.array(data_month[type_case]["counts"])
-            
-            y_counts = list(y_counts)
-            total=str(sum(y_counts))
-            cases_statistics_total = [statistics.mean(y_counts), max(y_counts), (min(y_counts))]
-
-            # Grafica con el total de tickets manuales
-            y_counts_handwork = len(x_date)*[0]
-            for type_case in data_month:
-                if len(re.findall(r"handwork", type_case)) > 0:
-                    y_counts_handwork = y_counts_handwork + np.array(data_month[type_case]["counts"])
-            y_counts_handwork = list(y_counts_handwork)
-            cases_statistics_manual = [statistics.mean(y_counts_handwork), max(y_counts_handwork), min(y_counts_handwork)]
-
-
-            # Grafica con el total de tickets automaticas
-            y_counts_automatic = len(x_date)*[0]
-            for type_case in data_month:
-                if len(re.findall(r"automatic", type_case)) > 0:
-                    y_counts_automatic = y_counts_automatic + np.array(data_month[type_case]["counts"])
-            y_counts_automatic = list(y_counts_automatic)
-            cases_statistics_automatica = [statistics.mean(y_counts_automatic), max(y_counts_automatic), min(y_counts_automatic)]
-
-            return render_template(
-                "data_as/index.html",
-                page={"title": "Data Adaptive Security"},
-                total=total,
-                y_counts=y_counts,
-                y_counts_handwork=y_counts_handwork,
-                y_counts_automatic=y_counts_automatic,
-                cases_statistics=cases_statistics,
-                cases_statistics_total=cases_statistics_total,
-                cases_statistics_manual=cases_statistics_manual,
-                cases_statistics_automatica=cases_statistics_automatica
-            )
+        cases_statistics_total = {}
+        for variable in variables:
+            cases_statistics_total[variable] = [ round(statistics.mean(data[variable]),1), 
+                max(data[variable]), 
+                min(data[variable])
+            ]
 
         return render_template(
             "data_as/index.html",
-            page={"title": "Data Adaptive Security"}
+            page={"title": "Data Adaptive Security"},
+            data=data,
+            current_year=year,
+            current_month=month if month else None,
+            cases_statistics=cases_statistics,
+            cases_statistics_total = cases_statistics_total
         )
+
+    return render_template(
+        "data_as/index.html",
+        page={"title": "Data Adaptive Security"}
+    )
+
+
+@data_as.get("/detail")
+def index_detail():
+    current_folder = os.path.join(current_app.root_path, "static", "data_storage", "data_as", "data_collected")
+    if request.method == "GET":
+        year = request.args.get("year", type=int)
+        month = request.args.get("month", type=int)
+        type = request.args.get("type")
+        
+        if not year:
+            year = 2022
+        elif year < 2018 or year > 2023:
+            year = 2022
+
+        month = request.args.get("month", type=int)
+
+        if month and (month < 1 or month > 12):
+            return redirect(url_for("data_as.index", year=year, month=1))
+
+        if year and not month:
+            file_path = os.path.join(current_folder, str(year), f"total_offenses_year_{year}.json")
+            data = open(file_path)
+            data = json.load(data)
+
+        elif year and month:
+            file_path = os.path.join(current_folder, str(year), f"total_offenses_month_{month}.json")
+            data = open(file_path)
+            data = json.load(data)
+
+        if type == "handwork":
+            data = {"total": data["handwork_total"],
+                "success": data["handwork_success"],
+                "fails": data["handwork_fails"],
+                "undefined": data["handwork_undefined"],
+                "low": data["handwork_low"],
+                "mean": data["handwork_mean"],
+                "high": data["handwork_high"]
+            }
+        else:
+            data = {"total": data["automatic_total"],
+                "success": data["automatic_success"],
+                "fails": data["automatic_fails"],
+                "undefined": data["automatic_undefined"],
+                "low": data["automatic_low"],
+                "mean": data["automatic_mean"],
+                "high": data["automatic_high"]
+            }
+
+        return render_template(
+            "data_as/index_detail.html",
+            page={"title": "Data Adaptive Security"},
+            data=data,
+            current_year=year
+        )
+
+    return render_template(
+        "data_as/index_detail.html",
+        page={"title": "Data Adaptive Security"}
+    )

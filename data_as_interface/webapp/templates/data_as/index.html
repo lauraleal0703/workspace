@@ -1,21 +1,73 @@
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/series-label.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+{% extends "base.html" %}
 
-<figure class="highcharts-figure">
-    <div id="container_1"></div>
-</figure>
+{% block content %}
+{% include "data_as/menu.html" %}
 
-<figure class="highcharts-figure">
-    <div id="container_2"></div>
-</figure>
+
+<div class="card">
+    <div class="card-header">
+        {{ page.title }}
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <div>
+                <figure class="highcharts-figure">
+                    <div id="container_1"></div>
+                </figure>
+            </div>
+
+            <div class="row p-4">
+                <div class="col-6 text-center">
+                    <a class="btn btn-sm btn-outline-primary"
+                        {% if current_month %}
+                        href="/data_as/detail?year={{ current_year }}&month={{ current_month }}&type=handwork"
+                        {% else %}
+                        href="/data_as/detail?year={{ current_year }}&type=handwork"
+                        {% endif %}>
+                        Manuales
+                    </a>
+                </div>
+
+                <div class="col-6 text-center">
+                    <a class="btn btn-sm btn-outline-primary"
+                        {% if current_month %}
+                        href="/data_as/detail?year={{ current_year }}&month={{ current_month }}&type=automatic"
+                        {% else %}
+                        href="/data_as/detail?year={{ current_year }}&type=automatic"
+                        {% endif %}>
+                        Automaticas
+                    </a>
+                </div>
+
+                <!-- <div class="col-4 text-center">
+                    <a class="btn btn-sm btn-outline-primary"
+                        {% if current_month %}
+                        href="/data_as/detail?year={{ current_year }}&month={{ current_month }}&type=undefined"
+                        {% else %}
+                        href="/data_as/detail?year={{ current_year }}&type=undefined"
+                        {% endif %}>
+                        Indefinidas
+                    </a>
+                </div> -->
+            </div>
+
+            <div>
+                <figure class="highcharts-figure">
+                    <div id="container_2"></div>
+                </figure>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 Highcharts.chart('container_1', {
+    chart: {
+        width: 1200,
+        height: 260,
+    },
     title: {
-        text: 'Número total de incidentes de seguridad {{ total }}',
+        text: 'Número total de incidentes de seguridad {{ data["total_sum"] }}',
         align: 'center'
     },
     yAxis: {
@@ -25,7 +77,7 @@ Highcharts.chart('container_1', {
     },
     xAxis: {
         accessibility: {
-            rangeDescription: 'Range: 1 to {{ y_counts|length }}'
+            rangeDescription: 'Range: 1 to {{ data["handwork"]["success"]["low"]|length }}'
         }
     },
     legend: {
@@ -43,13 +95,16 @@ Highcharts.chart('container_1', {
     },
     series: [{
         name: 'Total',
-        data: {{ y_counts }} 
+        data: {{ data["total"] }} 
     }, {
         name: 'Manuales',
-        data: {{ y_counts_handwork }}
+        data: {{ data["handwork_total"] }}
     }, {
         name: 'Automáticas',
-        data: {{ y_counts_automatic }}
+        data: {{ data["automatic_total"] }}
+    }, {
+        name: 'Indefinidas',
+        data: {{ data["undefined"] }}
     }],
     responsive: {
         rules: [{
@@ -69,6 +124,8 @@ Highcharts.chart('container_1', {
 
 Highcharts.chart('container_2', {
     chart: {
+        width: 1200,
+        height: 260,
         type: 'column'
     },
     title: {
@@ -100,15 +157,22 @@ Highcharts.chart('container_2', {
     },
     series: [{
         name: 'Total',
-        data: {{ cases_statistics_total }}
-
+        data: {{ cases_statistics_total["total"]  }}
     }, {
         name: 'Manuales',
-        data: {{ cases_statistics_manual }}
-
+        data: {{ cases_statistics_total["handwork_total"]  }}
     }, {
         name: 'Automaticas',
-        data: {{ cases_statistics_automatica }}
+        data: {{ cases_statistics_total["automatic_total"] }}
+    }, {
+        name: 'Indefinidas',
+        data: {{ cases_statistics_total["undefined"] }}
     }]
 });
 </script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#menuData{{ current_year }}").addClass("active");
+    });
+</script>
+{% endblock %}

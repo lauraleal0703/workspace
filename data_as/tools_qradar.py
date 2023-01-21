@@ -38,20 +38,21 @@ def offenses(headers=None, params=None):
 def start_time_offenses(id_offense):
     def_name = "start_time_offenses"
     try:
-        data_qradar = offenses(
-                        params={
-                            "fields": "start_time",
-                            "filter": f"id={int(id_offense)}"
-                            }
-                        )
-        if data_qradar:
-            return int(data_qradar[0]["start_time"])/1000
+        data_id_offense = offenses(
+            params={
+                "fields": "start_time",
+                "filter": f"id={id_offense}"
+            }
+        )
+        if data_id_offense:
+            return int(data_id_offense[0]["start_time"])/1000
         else:
-            return ""
+            return []
     except Exception as e:
         logging.error(f"{def_name}: {e}")
-        return ""
+        return []
     
+
 ##################################
 #------------Soporte--------------
 ###################################
