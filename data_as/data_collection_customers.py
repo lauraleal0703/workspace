@@ -17,29 +17,22 @@ Por medio de este archivo se hace una recopilacion de información
 entre los datos obtenidos en Qradar y el ticket generado en OTRS
 """
 
-customers = ["AAN",
+customers = ["[AAN]",
     "Adaptive Security",
-    "BDO",
-    "CAS",
-    "EMSA",
-    "EVERTEC",
-    "Evertec",
-    "SBPay",
-    "SBPAY",
-    "SURA",
-    "UDLA",
-    "AS",
-    "CMPC",
-    "CCA",
-    "CYT",
-    "UDP",
-    "UAI",
-    "SINACOFI",
-    "Fwd",
-    "Re:",
-    "RE:",
-    "RV:",
-    "Undefined"
+    "[BDO]",
+    "[CAS]",
+    "[EMSA]",
+    "[EVERTEC]",
+    "[SBPay]",
+    "[SURA]",
+    "[UDLA]",
+    "[AS]",
+    "[CMPC]",
+    "[CCA]",
+    "[CYT]",
+    "[UDP]",
+    "[UAI]",
+    "[SINACOFI]"
 ]
 
 admin = ['Solange Aravena H.',
@@ -57,6 +50,51 @@ admin = ['Solange Aravena H.',
     'Mauricio Retamales',
     'Jonathan Finschi'
 ]
+
+titulos = ["Revision de respaldos ADM CSOC",
+    "Plan de actualización Backup",
+    "Redacción Boletín Adaptive Security",
+    "Información de Usuarios Autorizados",
+    "Informe Semanal",
+    "Informe Mensual",
+    "Fuera del trabajo Re:",
+    "Escalar caso a CISCO",
+    "Informe Seguridad",
+    "Activación de cuentas",
+    "Doble factor AMP para SNAM",
+    "Revision de usuarios problemas",
+    "Reporte Diario",
+    "Licencias Cloudflare"
+]
+
+
+tickets_period = Ticket.tickets_by_date(6, "2023-01-01", "2023-01-10")
+print(f"Total {len(tickets_period)}")
+
+total = 0
+ticket_customer_period = {}
+for customer in customers:
+    ticket_customer_period[customer] = {}
+    tickets_customer = Ticket.tickets_by_date_marca(6, customer, "2023-01-01", "2023-01-10")
+    total += len(tickets_customer)
+    print(f"\n-----Customer ----- {customer} --> {len(tickets_customer)}")
+    time_customer = timedelta(hours=1)
+    for ticket_customer in tickets_customer:
+        print(ticket_customer.id)
+        print(ticket_customer.title)
+        print(ticket_customer.create_time, ticket_customer.change_time)
+        resolution_time = ticket_customer.change_time - ticket_customer.create_time
+        time_customer += resolution_time
+        print(f"Responsable: {ticket_customer.user.full_name} ---> Time {resolution_time}\n")
+        for stado in ticket_customer.last_history:
+            print(stado.name)
+
+    print(f"\n-----Customer ----- {customer} --> {len(tickets_customer)} --- > {time_customer-timedelta(hours=1)}")  
+
+print(total)
+
+
+'''
 
 years = [2022, 2021, 2020, 2019, 2018]
 years = [2023]
@@ -89,6 +127,7 @@ for year in years:
         # Con las fechas ya obtenidad hacer el calculo del SLA de respuesta
         for ticket in data_otrs:
             name_admin = ticket.user.full_name
+            print( ticket.user_id, ticket.user.full_name)
             if name_admin not in ticket_admin_year:
                 ticket_admin_year[name_admin] = {}
             if int(date.split("-")[1]) not in ticket_admin_year[name_admin]:
@@ -112,7 +151,6 @@ for year in years:
             response_time = "0"
             print(f"tiempo se solucion {change_time-create_time_otrs}\n")
 
-''''
             print(f" id_offense: {id_offense[0]} --create_time_otrs:{create_time_otrs} --data_qradar:{data_qradar}")
             handwork = re.findall(r"Ofensa N°", ticket.title)
                 if handwork:
@@ -315,6 +353,7 @@ for year in years:
         print("\n")
     
     tools_data.save_data_json(f"ticket_offenses_year_{year}", ticket_offenses_year)
-'''
+
 print(f"Tiempo de ejecución {datetime.now()-inicio}")
 print("---Fin---")
+'''
