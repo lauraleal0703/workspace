@@ -11,7 +11,7 @@ os.system('clear')
 inicio = datetime.now()
 
     
-years = [2022, 2021, 2020, 2019, 2018]
+years = [2023, 2022, 2021, 2020, 2019, 2018]
 for year in years:
     total_offenses_year = {}
     inicio_year = datetime.now()
@@ -203,7 +203,7 @@ for year in years:
             total_offenses["automatic"]["undefined"]["mean"].append(len(ticket_offenses_year[month][day]["automatic"]["undefined"]["mean"]))
             total_offenses["automatic"]["undefined"]["high"].append(len(ticket_offenses_year[month][day]["automatic"]["undefined"]["high"]))
             total_offenses["undefined"].append(len(ticket_offenses_year[month][day]["undefined"]))
-        
+
         total_offenses_year["handwork"]["success"]["low"].append(sum(total_offenses["handwork"]["success"]["low"]))
         total_offenses_year["handwork"]["success"]["mean"].append(sum(total_offenses["handwork"]["success"]["mean"]))
         total_offenses_year["handwork"]["success"]["high"].append(sum(total_offenses["handwork"]["success"]["high"]))
@@ -223,7 +223,9 @@ for year in years:
         total_offenses_year["automatic"]["undefined"]["mean"].append(sum(total_offenses["automatic"]["undefined"]["mean"]))
         total_offenses_year["automatic"]["undefined"]["high"].append(sum(total_offenses["automatic"]["undefined"]["high"]))
         total_offenses_year["undefined"].append(sum(total_offenses["undefined"]))
-
+        
+        total_offenses["undefined_sum"] = sum(total_offenses["undefined"])
+        
         for variable in variables:
             total_offenses[variable] = len(ticket_offenses_year[month])*[0]
 
@@ -364,6 +366,8 @@ for year in years:
         print(f"Fin {year}-{month}")
         print(f"Tiempo de ejecución {datetime.now()-inicio_month}")
         tools_data.save_data_json(f"total_offenses_month_{int(month)}", total_offenses, year)
+
+    total_offenses_year["undefined_sum"]= sum(total_offenses_year["undefined"])
 
     for variable in variables:
         total_offenses_year[variable] = len(ticket_offenses_year)*[0]

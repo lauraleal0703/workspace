@@ -18,13 +18,14 @@ entre los datos obtenidos en Qradar y el ticket generado en OTRS
 """
 
 years = [2022, 2021, 2020, 2019, 2018]
+years = [2023]
 for year in years:
     print(f"------{year}--------")
     # Inicializar el diccionario del año
     ticket_offenses_year = {}
 
     # Definir el periodo que se quiere consultar
-    list_date = tools_data.list_date(datetime(year,1,1), datetime(year,12,31))
+    list_date = tools_data.list_date(datetime(year,1,1), datetime(year,1,23))
 
     # Recorrer cada uno de los días 
     for date in list_date:

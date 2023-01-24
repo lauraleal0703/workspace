@@ -94,16 +94,16 @@ Highcharts.chart('container_1', {
         }
     },
     series: [{
-        name: 'Total',
+        name: 'Total = {{ data["total_sum"] }}',
         data: {{ data["total"] }} 
     }, {
-        name: 'Manuales',
+        name: 'Manuales = {{ data["handwork_total_sum"] }}',
         data: {{ data["handwork_total"] }}
     }, {
-        name: 'Automáticas',
+        name: 'Automáticas = {{ data["automatic_total_sum"] }}',
         data: {{ data["automatic_total"] }}
     }, {
-        name: 'Indefinidas',
+        name: 'Indefinidas = {{ data["undefined_sum"] }}',
         data: {{ data["undefined"] }}
     }],
     responsive: {

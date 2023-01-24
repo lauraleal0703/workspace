@@ -57,13 +57,16 @@ Highcharts.chart('container_1', {
         }
     },
     series: [{
-        name: 'No Cumplen',
+        name: 'Total = {{ data["total_sum"] }}',
+        data: {{ data["total"] }}
+    }, {
+        name: 'No Cumplen = {{ data["fails_sum"] }}',
         data: {{ data["fails"] }}
     }, {
-        name: 'Indefinidas',
+        name: 'Indefinidas = {{ data["undefined_sum"] }}',
         data: {{ data["undefined"] }}
     }, {
-        name: 'Cumplen',
+        name: 'Cumplen = {{  data["success_sum"] }}',
         data: {{ data["success"] }}
         
     }],
@@ -116,13 +119,13 @@ Highcharts.chart('container_2', {
         }
     },
     series: [{
-        name: 'Baja',
+        name: 'Baja = {{ data["low_sum"] }}',
         data: {{ data["low"] }}
     }, {
-        name: 'Media',
+        name: 'Media = {{ data["mean_sum"] }}',
         data: {{ data["mean"] }}
     }, {
-        name: 'Alta',
+        name: 'Alta = {{ data["high_sum"] }}',
         data: {{ data["high"] }}
     }],
     responsive: {

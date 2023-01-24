@@ -91,7 +91,7 @@ def index_detail():
         type = request.args.get("type")
         
         if not year:
-            year = 2022
+            year = 2023
         elif year < 2018 or year > 2023:
             year = 2022
 
@@ -117,7 +117,14 @@ def index_detail():
                 "undefined": data["handwork_undefined"],
                 "low": data["handwork_low"],
                 "mean": data["handwork_mean"],
-                "high": data["handwork_high"]
+                "high": data["handwork_high"],
+                "total_sum": data["handwork_total_sum"],
+                "success_sum": data["handwork_success_sum"],
+                "fails_sum": data["handwork_fails_sum"],
+                "undefined_sum": data["handwork_undefined_sum"],
+                "low_sum": data["handwork_low_sum"],
+                "mean_sum": data["handwork_mean_sum"],
+                "high_sum": data["handwork_high_sum"]
             }
         else:
             data = {"total": data["automatic_total"],
@@ -126,7 +133,14 @@ def index_detail():
                 "undefined": data["automatic_undefined"],
                 "low": data["automatic_low"],
                 "mean": data["automatic_mean"],
-                "high": data["automatic_high"]
+                "high": data["automatic_high"],
+                "total_sum": data["automatic_total_sum"],
+                "success_sum": data["automatic_success_sum"],
+                "fails_sum": data["automatic_fails_sum"],
+                "undefined_sum": data["automatic_undefined_sum"],
+                "low_sum": data["automatic_low_sum"],
+                "mean_sum": data["automatic_mean_sum"],
+                "high_sum": data["automatic_high_sum"]
             }
 
         return render_template(
